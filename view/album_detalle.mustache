@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>{{album.titulo}}</title>
+  <link rel="stylesheet" href="public/css/style.css">
+</head>
+<body>
+  <h1>{{album.titulo}}</h1>
+  <div class="slider">
+    {{#fotos}}
+      <img src="{{ruta}}" alt="{{descripcion}}">
+    {{/fotos}}
+  </div>
+</body>
+</html>

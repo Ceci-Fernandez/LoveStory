@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Sorpresas</title>
+  <link rel="stylesheet" href="public/css/style.css">
+</head>
+<body>
+  <h1>Cápsulas del tiempo</h1>
+  {{#mensajes}}
+    <div class="capsula">{{mensaje}}</div>
+  {{/mensajes}}
+
+  <button id="btn-sorprendeme">Sorprendeme</button>
+  <div id="resultado-sorpresa"></div>
+
+  <script src="public/js/main.js"></script>
+</body>
+</html>

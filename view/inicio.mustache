@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{nombre1}} & {{nombre2}}</title>
+  <link rel="stylesheet" href="public/css/style.css?v=3">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+</head>
+<body class="pagina-inicio" data-tema-actual="azul">
+
+  <!-- Datos de todas las secciones (tema + canción) para el reproductor -->
+  <script id="datos-secciones" type="application/json">{{{secciones_json}}}</script>
+
+  <!-- ===== Indicador lateral tipo línea de tiempo ===== -->
+  <nav class="nav-puntos" aria-label="Recorrido de la historia">
+    {{#secciones}}
+      <button class="punto" data-target="{{id}}" title="{{label}}">
+        <span class="punto-etiqueta">{{label}}</span>
+      </button>
+    {{/secciones}}
+  </nav>
+
+  <!-- ===== Reproductor fijo ===== -->
+  <div class="reproductor" id="reproductor">
+    <div class="reproductor-nota" id="reproductor-nota"></div>
+    <div class="reproductor-fila">
+      <div class="reproductor-info">
+        <span class="reproductor-titulo" id="reproductor-titulo">—</span>
+        <span class="reproductor-artista" id="reproductor-artista">Tocá play para empezar</span>
+      </div>
+      <div class="reproductor-controles">
+        <button id="btn-anterior" title="Anterior" aria-label="Canción anterior">⏮</button>
+        <button id="btn-play" title="Reproducir" aria-label="Reproducir o pausar">▶</button>
+        <button id="btn-siguiente" title="Siguiente" aria-label="Canción siguiente">⏭</button>
+      </div>
+    </div>
+    <div class="reproductor-progreso">
+      <input type="range" id="barra-progreso" min="0" max="100" value="0" step="0.1" aria-label="Progreso de la canción">
+    </div>
+    <div class="reproductor-fila reproductor-fila-chica">
+      <button id="btn-modo-historia" class="chip-modo-historia activo" title="Modo historia: la música sigue el scroll">
+        🔗 Modo historia
+      </button>
+      <div class="reproductor-volumen">
+        <button id="btn-mute" title="Silenciar" aria-label="Silenciar">🔊</button>
+        <input type="range" id="barra-volumen" min="0" max="1" step="0.01" value="0.8" aria-label="Volumen">
+      </div>
+    </div>
+  </div>
+
+  <audio id="audio-reproductor" preload="none"></audio>
+
+  <!-- ===== Hero / Introducción ===== -->
+  <section class="seccion hero seccion-hero tema-azul" id="intro" data-seccion-id="intro" data-tema="azul"
+    style="background-image:url('public/images/portada.jpg')">
+    <div class="hero-overlay">
+      <h1 data-aos="fade-up">{{nombre1}} & {{nombre2}}</h1>
+      <p class="hero-subtitulo" data-aos="fade-up" data-aos-delay="150">
+        Nuestra historia, desde el día que nos cruzamos hasta hoy.
+      </p>
+      <button class="scroll-cue" id="btn-empezar" aria-label="Empezar la historia">↓</button>
+    </div>
+  </section>
+
+  <!-- ===== Cada hito es su propia sección/capítulo, con su tema y su canción ===== -->
+  {{#hitos}}
+    <section class="seccion seccion-hito tema-{{tema}}" id="{{id}}" data-seccion-id="{{id}}" data-tema="{{tema}}">
+      <div class="hito {{alineacion}}" data-aos="fade-up">
+        <div class="hito-texto">
+          <p class="hito-titulo">{{titulo}}</p>
+          <p class="hito-fecha">{{fecha}}</p>
+          <p class="hito-mensaje">{{mensaje}}</p>
+          {{#tiene_extra}}
+            <button class="btn-ver-mas" data-target="{{galeria_id}}">Ver más fotos</button>
+          {{/tiene_extra}}
+        </div>
+        {{#tiene_fotos}}
+        <div class="hito-foto pila-fotos">
+          {{#fotos_pila}}
+            <img src="{{ruta}}" alt="{{descripcion}}" style="--angulo: {{angulo}}deg;">
+          {{/fotos_pila}}
+        </div>
+        {{/tiene_fotos}}
+        <div class="galeria-extra" id="{{galeria_id}}">
+          {{#fotos_extra}}
+            <img src="{{ruta}}" alt="{{descripcion}}">
+          {{/fotos_extra}}
+        </div>
+      </div>
+    </section>
+  {{/hitos}}
+
+  <!-- ===== Viajes ===== -->
+  <section class="seccion seccion-viajes tema-celeste" id="{{viajes.id}}" data-seccion-id="{{viajes.id}}" data-tema="{{viajes.tema}}">
+    <h2 data-aos="fade-up">Nuestros viajes</h2>
+    <!-- Un viaje por álbum marcado como "es_viaje", con sus fotos. El JS
+         (iniciarCarruselViajes en main.js) arma el carrusel a partir de
+         este JSON: pasa las fotos de un viaje y, al terminar, sigue
+         automáticamente con el próximo viaje. -->
+    <script id="datos-viajes" type="application/json">{{{viajes_json}}}</script>
+    <p class="carrusel-titulo-lugar" id="carrusel-titulo-lugar" data-aos="fade-up"></p>
+    <div class="carrusel" id="carrusel-viajes" data-aos="fade-up" data-aos-delay="100"></div>
+  </section>
+
+  <!-- ===== Series ===== -->
+  <section class="seccion seccion-series tema-negro" id="{{series_seccion.id}}" data-seccion-id="{{series_seccion.id}}" data-tema="{{series_seccion.tema}}">
+    <h2 data-aos="fade-up">Series y pelis que vimos juntos</h2>
+    <div class="grid-series" data-aos="fade-up" data-aos-delay="100">
+      {{#series}}
+        <div class="tarjeta-serie">
+          <h3>{{nombre}}</h3>
+          <p>{{plataforma}}</p>
+          <p class="puntaje">★ {{puntaje}}/5</p>
+        </div>
+      {{/series}}
+    </div>
+  </section>
+
+  <!-- ===== Contador ===== -->
+  <section class="seccion seccion-contador tema-violeta" id="{{contador_seccion.id}}" data-seccion-id="{{contador_seccion.id}}" data-tema="{{contador_seccion.tema}}">
+    <div class="contador-grande"
+     id="contador"
+      data-inicio="{{fecha_inicio}}"
+       data-aos="zoom-in"></div>
+  </section>
+
+  <!-- ===== Final ===== -->
+  <section class="seccion seccion-final tema-blanco" id="final" data-seccion-id="final" data-tema="blanco">
+    <div class="final-contenido" data-aos="fade-up">
+      <p class="final-eyebrow">{{nombre1}} & {{nombre2}}</p>
+      <h2>Y esto recién empieza.</h2>
+      <p class="final-texto">Gracias por elegirnos, un día tras otro.</p>
+    </div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script>AOS.init({ once: true, duration: 700 });</script>
+  <script src="public/js/main.js?v=3"></script>
+  <script src="public/js/reproductor.js?v=3"></script>
+</body>
+</html>

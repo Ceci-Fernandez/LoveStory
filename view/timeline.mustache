@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Nuestra línea de tiempo</title>
+  <link rel="stylesheet" href="public/css/style.css">
+</head>
+<body>
+  <nav><!-- incluir menu.mustache o similar --></nav>
+
+  <section class="timeline">
+    {{#recuerdos}}
+      <div class="hito" data-fecha="{{fecha}}">
+        <p>{{mensaje}}</p>
+      </div>
+    {{/recuerdos}}
+  </section>
+
+  <script src="public/js/main.js"></script>
+</body>
+</html>

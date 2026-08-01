@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Álbumes</title>
+  <link rel="stylesheet" href="public/css/style.css">
+</head>
+<body>
+  <h1>Álbumes</h1>
+  <div class="grid-albumes">
+    {{#albumes}}
+      <a href="index.php?route=album-ver&id={{id}}" class="tarjeta-album">
+        <h2>{{titulo}}</h2>
+        <p>{{descripcion}}</p>
+      </a>
+    {{/albumes}}
+  </div>
+</body>
+</html>

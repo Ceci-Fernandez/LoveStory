@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Nuestra historia</title>
+  <link rel="stylesheet" href="public/css/style.css">
+</head>
+<body class="pantalla-login">
+  <div class="caja-acceso">
+    <p>Bienvenido.</p>
+    <p>Esta historia solamente puede abrirla una persona.</p>
+
+    <form action="index.php?route=login-verificar" method="POST">
+      <label>{{pregunta}}</label>
+      <input type="text" name="respuesta" autofocus required>
+      <button type="submit">Entrar</button>
+    </form>
+
+    {{#error}}
+      <p class="error">{{error}}</p>
+    {{/error}}
+  </div>
+</body>
+</html>
