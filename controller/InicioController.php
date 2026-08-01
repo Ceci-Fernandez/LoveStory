@@ -84,52 +84,49 @@ class InicioController
         $hitos = [];
         $i = 0;
 
-        // Mapa id de álbum => es_viaje, para poder excluir de las secciones
-        // (los "hitos") las fotos que pertenecen a un álbum de viaje: esas
-        // fotos ahora se muestran únicamente en el carrusel de viajes.
         $esViajePorAlbum = [];
         foreach ($albumes as $album) {
             $esViajePorAlbum[$album['id']] = !empty($album['es_viaje']);
         }
 
-        // Pool de temas y canciones que se van repitiendo hito a hito.
-        // EDITAR ACÁ: reemplazar título/artista/archivo/nota por las canciones reales
-        // (y subir el mp3 correspondiente a public/audio/).
         $temaPool = ['rosa', 'celeste'];
         $cancionPool = [
             $this->cancion('Yellow', 'Coldplay', 'yellow.mp3', 'La escuchábamos cuando viajábamos en colectivo.'),
             $this->cancion('Home', 'Edward Sharpe & The Magnetic Zeros', 'home.mp3', 'Sonó el día de la mudanza.'),
             $this->cancion('Perfect Duet', 'Ed Sheeran & Beyoncé', 'perfect-duet.mp3', 'Una tarde cualquiera, en casa.'),
         ];
-
-        // Cuántas fotos se ven "amontonadas" antes de necesitar el botón de expandir.
-        $tamanioPila = 3;
-        $angulos = [-8, 5, -3, 7, -5, 4]; // se repiten en rueda si hay más de 6 fotos en la pila
+        $angulos = [-8, 5, -3, 7, -5, 4];
 
         foreach ($recuerdos as $recuerdo) {
             $fotos = [];
             $albumId = $recuerdo['album_id'] ?? null;
             $esAlbumDeViaje = $albumId && !empty($esViajePorAlbum[$albumId]);
 
-            // Si el recuerdo apunta a un álbum de viaje, no traemos sus
-            // fotos acá: ese álbum ya se ve, completo, en el carrusel de
-            // viajes de más abajo. En la sección solo queda el texto.
             if (!empty($albumId) && !$esAlbumDeViaje) {
                 $fotos = $this->fotoModel->obtenerPorAlbum((int)$albumId);
             }
 
-            $fotosPila = [];
-            foreach (array_slice($fotos, 0, $tamanioPila) as $idx => $foto) {
-                $fotosPila[] = $foto + ['angulo' => $angulos[$idx % count($angulos)]];
+            $layout = $recuerdo['layout'] ?? 'polaroid';
+            $esTags = $layout === 'tags';
+            $tamanioMostrar = $esTags ? 5 : 3;
+
+            $fotosMostrar = [];
+            foreach (array_slice($fotos, 0, $tamanioMostrar) as $idx => $foto) {
+                $fotosMostrar[] = $foto + ['angulo' => $angulos[$idx % count($angulos)]];
             }
-            $fotosExtra = array_slice($fotos, $tamanioPila);
+            $fotosExtra = array_slice($fotos, $tamanioMostrar);
+            $mitad = (int) ceil(count($fotosExtra) / 2);
+            $fila1 = array_slice($fotosExtra, 0, $mitad);
+            $fila2 = array_slice($fotosExtra, $mitad);
+            // Se duplica cada fila para que el loop de la animación sea perfecto (sin salto).
+            $galeriaFila1 = array_merge($fila1, $fila1);
+            $galeriaFila2 = array_merge($fila2, $fila2);
+
+            $tagsTexto = $recuerdo['tags'] ?? null;
+            $tags = $tagsTexto ? array_map('trim', explode(',', $tagsTexto)) : [];
 
             $mensaje = $recuerdo['mensaje'];
             $etiqueta = mb_substr($mensaje, 0, 30) . (mb_strlen($mensaje) > 30 ? '…' : '');
-
-            // Título grande de la sección: si el recuerdo tiene su propio
-            // 'titulo' (columna a agregar en mensajes) se usa ese; si no,
-            // se arma uno corto a partir del mensaje.
             $titulo = !empty($recuerdo['titulo']) ? $recuerdo['titulo'] : $etiqueta;
 
             $hitos[] = [
@@ -139,13 +136,20 @@ class InicioController
                 'mensaje'      => $mensaje,
                 'fecha'        => date('d-m-Y', strtotime($recuerdo['fecha'])),
                 'alineacion'   => $i % 2 === 0 ? 'izquierda' : 'derecha',
-                'fotos_pila'   => $fotosPila,
-                'tiene_fotos'  => count($fotosPila) > 0,
+                'es_tags'      => $esTags,
+                'fotos_pila'   => $esTags ? [] : $fotosMostrar,
+                'fotos_fila'   => $esTags ? $fotosMostrar : [],
+                'tiene_fotos'  => count($fotosMostrar) > 0,
                 'fotos_extra'  => $fotosExtra,
+                'galeria_fila1' => $galeriaFila1,
+                'galeria_fila2' => $galeriaFila2,
                 'tiene_extra'  => count($fotosExtra) > 0,
                 'galeria_id'   => 'galeria-' . $i,
+                'tags'         => $tags,
+                'tiene_tags'   => count($tags) > 0,
                 'tema'         => $temaPool[$i % count($temaPool)],
                 'cancion'      => $cancionPool[$i % count($cancionPool)],
+
             ];
             $i++;
         }

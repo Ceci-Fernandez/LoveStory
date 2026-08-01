@@ -15,8 +15,17 @@ document.addEventListener('DOMContentLoaded', () => {
   configurarSorpresa();
   configurarVerMas();
   iniciarCarruselViajes();
+  configurarCartaGiratoria(); 
 });
 
+function configurarCartaGiratoria() {
+  const carta = document.getElementById('carta-giratoria');
+  if (!carta) return;
+
+  carta.addEventListener('click', () => {
+    const girada = carta.getAttribute('data-girada') === 'true';
+    carta.setAttribute('data-girada', girada ? 'false' : 'true');
+  });}
 function animarTimeline() {
   const hitos = document.querySelectorAll('.hito');
   if (!hitos.length) return;
@@ -124,7 +133,7 @@ function configurarVerMas() {
         : 'Ver más fotos';
     }
 
-   // boton.addEventListener('click', alternarGaleria);
+    boton.addEventListener('click', alternarGaleria);
 
     // La pila de 3 Polaroids tiene un comportamiento independiente.
     const hito = boton.closest('.hito');
@@ -149,9 +158,12 @@ function configurarVerMas() {
  */
 function iniciarCarruselViajes() {
   const datosEl = document.getElementById('datos-viajes');
-  const contenedor = document.getElementById('carrusel-viajes');
-  const tituloEl = document.getElementById('carrusel-titulo-lugar');
-  if (!datosEl || !contenedor) return;
+  const wrap = document.getElementById('carrusel-viaje-actual');
+  const pista = document.getElementById('carrusel-viajes');
+  const tituloEl = document.getElementById('carrusel-viaje-titulo');
+  const prevBtn = document.getElementById('carrusel-viajes-prev');
+  const nextBtn = document.getElementById('carrusel-viajes-next');
+  if (!datosEl || !pista || !wrap) return;
 
   let viajes = [];
   try {
@@ -164,29 +176,64 @@ function iniciarCarruselViajes() {
   viajes = viajes.filter((v) => v.fotos && v.fotos.length);
   if (!viajes.length) return;
 
-  contenedor.innerHTML = '<img class="carrusel-imagen" alt="">';
-  const img = contenedor.querySelector('.carrusel-imagen');
-
   let indiceViaje = 0;
-  let indiceFoto = 0;
+  let rafId = null;
+  let cambioTimeout = null;
+  const DURACION_POR_LUGAR = 7000; // ms que se queda cada lugar antes de pasar al siguiente
+  const velocidad = 0.5; // px por frame del scroll interno de fotos
 
-  function mostrarFotoActual() {
+  function renderViajeActual() {
     const viaje = viajes[indiceViaje];
-    const foto = viaje.fotos[indiceFoto];
+    tituloEl.textContent = viaje.lugar;
 
-    // Saco la clase para "resetear" la animación y forzar reflow, así la
-    // próxima foto vuelve a entrar deslizándose (y no aparece de golpe).
-    img.classList.remove('entrando');
-    void img.offsetWidth;
-
-    img.src = foto.ruta;
-    img.alt = foto.descripcion || viaje.lugar;
-    img.classList.add('entrando');
-
-    if (tituloEl) {
-      tituloEl.textContent = viaje.lugar;
-    }
+    const doble = viaje.fotos.concat(viaje.fotos); // para loop sin corte
+    pista.innerHTML = doble
+      .map((f) => `<img src="${f.ruta}" alt="${viaje.lugar}" loading="lazy">`)
+      .join('');
+    pista.scrollLeft = 0;
   }
+
+  function scrollLoop() {
+    pista.scrollLeft += velocidad;
+    if (pista.scrollLeft >= pista.scrollWidth / 2) {
+      pista.scrollLeft = 0;
+    }
+    rafId = requestAnimationFrame(scrollLoop);
+  }
+
+  function cambiarA(nuevoIndice) {
+    clearTimeout(cambioTimeout);
+    indiceViaje = (nuevoIndice + viajes.length) % viajes.length;
+
+    wrap.classList.add('saliendo');
+    setTimeout(() => {
+      renderViajeActual();
+      wrap.classList.remove('saliendo');
+      wrap.classList.add('entrando');
+      // Forzar reflow para que el navegador registre el estado "entrando"
+      // antes de sacarlo, y así se vea la transición.
+      void wrap.offsetWidth;
+      wrap.classList.remove('entrando');
+    }, 350);
+
+    programarSiguienteCambio();
+  }
+
+  function programarSiguienteCambio() {
+    clearTimeout(cambioTimeout);
+    cambioTimeout = setTimeout(() => cambiarA(indiceViaje + 1), DURACION_POR_LUGAR);
+  }
+
+  renderViajeActual();
+  rafId = requestAnimationFrame(scrollLoop);
+  programarSiguienteCambio();
+
+  if (prevBtn) prevBtn.addEventListener('click', () => cambiarA(indiceViaje - 1));
+  if (nextBtn) nextBtn.addEventListener('click', () => cambiarA(indiceViaje + 1));
+
+  wrap.addEventListener('mouseenter', () => { if (rafId) cancelAnimationFrame(rafId); });
+  wrap.addEventListener('mouseleave', () => { rafId = requestAnimationFrame(scrollLoop); });
+}
 
   function avanzar() {
     indiceFoto++;
@@ -206,4 +253,4 @@ function iniciarCarruselViajes() {
   contenedor.addEventListener('mouseleave', () => {
     intervalo = setInterval(avanzar, 3000);
   });
-}
+

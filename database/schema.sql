@@ -106,3 +106,4 @@ ALTER TABLE mensajes ADD COLUMN titulo VARCHAR(150) NULL;
 -- Ejemplo para cargarle un título a un recuerdo puntual:
 -- UPDATE mensajes SET titulo = 'Nuestra primera cita' WHERE id = 2;
 
+UPDATE albumes SET es_viaje = 1 WHERE titulo IN ('Bariloche', 'El Chaltén', 'Ushuaia');

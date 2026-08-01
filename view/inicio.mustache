@@ -64,8 +64,40 @@
   </section>
 
   <!-- ===== Cada hito es su propia sección/capítulo, con su tema y su canción ===== -->
-  {{#hitos}}
-    <section class="seccion seccion-hito tema-{{tema}}" id="{{id}}" data-seccion-id="{{id}}" data-tema="{{tema}}">
+ {{#hitos}}
+  <section class="seccion seccion-hito tema-{{tema}}" id="{{id}}" data-seccion-id="{{id}}" data-tema="{{tema}}">
+    {{#es_tags}}
+      <div class="hito-tags-layout" data-aos="fade-up">
+        <h3 class="hito-titulo">{{titulo}}</h3>
+        <p class="hito-mensaje">{{mensaje}}</p>
+
+        <div class="fila-fotos">
+          {{#fotos_fila}}
+            <img src="{{ruta}}" alt="{{descripcion}}">
+          {{/fotos_fila}}
+        </div>
+
+        {{#tiene_extra}}
+          <button class="btn-ver-mas" data-target="{{galeria_id}}">Ver más fotos</button>
+        {{/tiene_extra}}
+       <div class="galeria-extra-marquee" id="{{galeria_id}}">
+  <div class="marquee-fila marquee-der">
+    {{#galeria_fila1}}<img src="{{ruta}}" alt="{{descripcion}}">{{/galeria_fila1}}
+  </div>
+  <div class="marquee-fila marquee-izq">
+    {{#galeria_fila2}}<img src="{{ruta}}" alt="{{descripcion}}">{{/galeria_fila2}}
+  </div>
+</div>
+
+        {{#tiene_tags}}
+          <div class="lista-tags">
+            {{#tags}}<span class="tag-pill">{{.}}</span>{{/tags}}
+          </div>
+        {{/tiene_tags}}
+      </div>
+    {{/es_tags}}
+
+    {{^es_tags}}
       <div class="hito {{alineacion}}" data-aos="fade-up">
         <div class="hito-texto">
           <p class="hito-titulo">{{titulo}}</p>
@@ -82,14 +114,18 @@
           {{/fotos_pila}}
         </div>
         {{/tiene_fotos}}
-        <div class="galeria-extra" id="{{galeria_id}}">
-          {{#fotos_extra}}
-            <img src="{{ruta}}" alt="{{descripcion}}">
-          {{/fotos_extra}}
-        </div>
+        <div class="galeria-extra-marquee" id="{{galeria_id}}">
+  <div class="marquee-fila marquee-der">
+    {{#galeria_fila1}}<img src="{{ruta}}" alt="{{descripcion}}">{{/galeria_fila1}}
+  </div>
+  <div class="marquee-fila marquee-izq">
+    {{#galeria_fila2}}<img src="{{ruta}}" alt="{{descripcion}}">{{/galeria_fila2}}
+  </div>
+</div>
       </div>
-    </section>
-  {{/hitos}}
+    {{/es_tags}}
+  </section>
+{{/hitos}}
 
   <!-- ===== Viajes ===== -->
   <section class="seccion seccion-viajes tema-celeste" id="{{viajes.id}}" data-seccion-id="{{viajes.id}}" data-tema="{{viajes.tema}}">
@@ -99,38 +135,55 @@
          este JSON: pasa las fotos de un viaje y, al terminar, sigue
          automáticamente con el próximo viaje. -->
     <script id="datos-viajes" type="application/json">{{{viajes_json}}}</script>
-    <p class="carrusel-titulo-lugar" id="carrusel-titulo-lugar" data-aos="fade-up"></p>
-    <div class="carrusel" id="carrusel-viajes" data-aos="fade-up" data-aos-delay="100"></div>
+<div class="carrusel-viajes-wrap" data-aos="fade-up" data-aos-delay="100">
+  <button class="carrusel-flecha carrusel-flecha-izq" id="carrusel-viajes-prev" aria-label="Lugar anterior">‹</button>
+
+  <div class="carrusel-viaje-actual" id="carrusel-viaje-actual">
+    <h3 class="carrusel-viaje-titulo" id="carrusel-viaje-titulo"></h3>
+    <div class="tira-viajes" id="carrusel-viajes"></div>
+  </div>
+
+  <button class="carrusel-flecha carrusel-flecha-der" id="carrusel-viajes-next" aria-label="Lugar siguiente">›</button>
+</div>
   </section>
 
-  <!-- ===== Series ===== -->
-  <section class="seccion seccion-series tema-negro" id="{{series_seccion.id}}" data-seccion-id="{{series_seccion.id}}" data-tema="{{series_seccion.tema}}">
-    <h2 data-aos="fade-up">Series y pelis que vimos juntos</h2>
-    <div class="grid-series" data-aos="fade-up" data-aos-delay="100">
-      {{#series}}
-        <div class="tarjeta-serie">
-          <h3>{{nombre}}</h3>
-          <p>{{plataforma}}</p>
-          <p class="puntaje">★ {{puntaje}}/5</p>
-        </div>
-      {{/series}}
-    </div>
-  </section>
+<!-- ===== Nuestros pasatiempos ===== -->
+<section class="seccion seccion-series tema-negro" id="{{series_seccion.id}}" data-seccion-id="{{series_seccion.id}}" data-tema="{{series_seccion.tema}}">
+  <h2 data-aos="fade-up">Nuestros pasatiempos entre mates, cenas y almuerzos</h2>
+  <div class="grid-series" data-aos="fade-up" data-aos-delay="100">
+    {{#series}}
+      <div class="tarjeta-serie">
+        {{#imagen}}<img src="{{imagen}}" alt="{{nombre}}">{{/imagen}}
+        <h3>{{nombre}}</h3>
+      </div>
+    {{/series}}
+  </div>
+</section>
 
   <!-- ===== Contador ===== -->
-  <section class="seccion seccion-contador tema-violeta" id="{{contador_seccion.id}}" data-seccion-id="{{contador_seccion.id}}" data-tema="{{contador_seccion.tema}}">
-    <div class="contador-grande"
-     id="contador"
-      data-inicio="{{fecha_inicio}}"
-       data-aos="zoom-in"></div>
-  </section>
+<section class="seccion seccion-contador tema-violeta" id="{{contador_seccion.id}}" data-seccion-id="{{contador_seccion.id}}" data-tema="{{contador_seccion.tema}}">
+  <h2 class="contador-titulo" data-aos="fade-up">Oficialmente de novios desde el 01/08/2023</h2>
+  <div class="contador-grande" id="contador" data-inicio="{{fecha_inicio}}" data-aos="zoom-in"></div>
+  <p class="contador-subtitulo" data-aos="fade-up">Y nos conocemos desde el 11/12/2020</p>
+</section>
+<!-- ===== Carta que se da vuelta ===== -->
+<section class="seccion seccion-carta tema-rosa" id="carta" data-seccion-id="carta" data-tema="rosa">
+  <div class="carta" id="carta-giratoria" data-aos="zoom-in">
+    <div class="carta-cara carta-frente">
+      <img src="public/images/caricatura.jpg" alt="Caricatura de los dos">
+    </div>
+    <div class="carta-cara carta-dorso">
+      <p>Te ama,<br>Cecilia</p>
+    </div>
+  </div>
+</section>
 
   <!-- ===== Final ===== -->
   <section class="seccion seccion-final tema-blanco" id="final" data-seccion-id="final" data-tema="blanco">
     <div class="final-contenido" data-aos="fade-up">
       <p class="final-eyebrow">{{nombre1}} & {{nombre2}}</p>
       <h2>Y esto recién empieza.</h2>
-      <p class="final-texto">Gracias por elegirnos, un día tras otro.</p>
+      <p class="final-texto"></p>
     </div>
   </section>
 

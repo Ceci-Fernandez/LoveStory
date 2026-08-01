@@ -101,6 +101,19 @@ body {
   opacity: 0.7;
   margin-top: 0.35rem;
 }
+.contador-titulo {
+  font-family: var(--fuente-titulo);
+  font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.contador-subtitulo {
+  text-align: center;
+  margin-top: 1.5rem;
+  opacity: 0.75;
+  font-size: 0.95rem;
+}
 
 .estadisticas {
   display: flex;
@@ -239,7 +252,7 @@ body {
   cursor: pointer;
 }
 
-.galeria-extra {
+/*.galeria-extra {
   flex-basis: 100%;
   display: none;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -254,16 +267,67 @@ body {
 .galeria-extra img {
   width: 100%;
   border-radius: 8px;
+}*/
+.galeria-extra-marquee {
+  display: none;
+  width: 100%;
+  overflow: hidden;
+  margin-top: 1.5rem;
+}
+
+.galeria-extra-marquee.visible {
+  display: block;
+}
+
+.marquee-fila {
+  display: flex;
+  gap: 0.6rem;
+  width: max-content;
+}
+
+.marquee-fila + .marquee-fila {
+  margin-top: 0.6rem;
+}
+
+.marquee-fila img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex: 0 0 auto;
+}
+
+.marquee-der {
+  animation: marquee-der 22s linear infinite;
+}
+
+.marquee-izq {
+  animation: marquee-izq 22s linear infinite;
+}
+
+@keyframes marquee-der {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes marquee-izq {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@media (max-width: 600px) {
+  .marquee-fila img { width: 70px; height: 70px; }
 }
 
 /* ---- Pila de fotos amontonadas (estilo polaroids desparramados) ----
    Selector con más especificidad que ".hito-foto img" de arriba, para
    asegurar que esta gane siempre sin importar el orden en el archivo. */
 .hito-foto.pila-fotos {
-    position: relative;
-    overflow: visible;
-    height: 420px;
-    cursor: pointer;
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 4 / 5;
+  margin: 0 auto 1.5rem auto;
 }
 
 .hito-foto.pila-fotos img {
@@ -384,10 +448,21 @@ body {
 .tarjeta-serie {
   background: rgba(127, 127, 127, 0.12);
   border-radius: 12px;
-  padding: 1rem;
+  overflow: hidden;
   text-align: center;
 }
 
+.tarjeta-serie img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.tarjeta-serie h3 {
+  padding: 0.75rem;
+  font-size: 1rem;
+}
 .puntaje {
   color: var(--color-acento);
 }
@@ -702,4 +777,182 @@ body.pagina-inicio {
   aspect-ratio: 4 / 5;
   margin-bottom: 1.5rem;
 }
+}
+.carrusel-viajes-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1400px;
+  margin: 2rem auto 0;
+}
+
+.carrusel-viaje-actual {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.carrusel-viaje-actual.saliendo {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+.carrusel-viaje-actual.entrando {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.carrusel-viaje-titulo {
+  text-align: center;
+  font-family: var(--fuente-titulo);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+}
+
+.tira-viajes {
+  display: flex;
+  gap: 1rem;
+  overflow-x: hidden;
+  padding: 0.5rem 0;
+}
+
+.tira-viajes img {
+  flex: 0 0 auto;
+  height: 320px;
+  width: auto;
+  max-width: 420px;
+  object-fit: contain;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+}
+
+.carrusel-flecha {
+  position: absolute;
+  top: 55%;
+  transform: translateY(-50%);
+  z-index: 5;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  border: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.carrusel-flecha-izq { left: -10px; }
+.carrusel-flecha-der { right: -10px; }
+
+@media (max-width: 600px) {
+  .tira-viajes img { width: 180px; height: 230px; }
+  .carrusel-flecha { width: 34px; height: 34px; font-size: 1.2rem; }
+}
+.carta {
+  width: 30em;
+  height: 30em;
+  perspective: 1200px;
+  cursor: pointer;
+}
+
+.carta-cara {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  transition: transform 0.7s ease;
+  transform-style: preserve-3d;
+}
+
+.carta[data-girada="true"] .carta-frente {
+  transform: rotateY(180deg);
+}
+
+.carta[data-girada="true"] .carta-dorso {
+  transform: rotateY(0deg);
+}
+
+.carta-frente {
+  background: #fff;
+  transform: rotateY(0deg);
+  overflow: hidden;
+}
+
+.carta-frente img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carta-dorso {
+  background: linear-gradient(135deg, #ffb6c1, #ff8fa3);
+  color: #4a1626;
+  font-family: var(--fuente-titulo);
+  font-size: 2rem;
+  ::before {
+    content: "💌";
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 0.5rem;
+  } 
+  display: flex;
+  text-align: center;
+  transform: rotateY(180deg);
+}
+.hito-tags-layout {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hito-titulo {
+  font-family: var(--fuente-titulo);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  margin-bottom: 0.75rem;
+}
+
+.hito-tags-layout .hito-mensaje {
+  max-width: 600px;
+  margin: 0 auto 1.5rem auto;
+}
+
+.fila-fotos {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.fila-fotos img {
+  width: 160px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.lista-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.tag-pill {
+  background: rgba(127, 127, 127, 0.18);
+  border: 1px solid rgba(127, 127, 127, 0.35);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 600px) {
+  .fila-fotos img { width: 120px; height: 150px; }
 }
