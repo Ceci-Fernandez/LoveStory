@@ -23,7 +23,7 @@ define('APP_NAME_2', 'Ceci');
 define('FECHA_INICIO_NOVIAZGO', '2023-08-01');
 
 // Pregunta y respuesta de acceso (versión simple, mejorable con hash + BD)
-define('ACCESS_QUESTION', '¿Cuántos años cumplimos hoy?');
+define('ACCESS_QUESTION', '¿Cuántos años cumplimos?');
 define('ACCESS_ANSWER', '3'); // cambiar por el valor real
 
 // Sesión
