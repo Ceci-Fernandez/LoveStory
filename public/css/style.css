@@ -73,6 +73,7 @@ body {
   font-family: var(--fuente-titulo);
   padding: 3rem 0;
 }
+
 .contador-fila {
   display: flex;
   justify-content: center;
@@ -101,6 +102,7 @@ body {
   opacity: 0.7;
   margin-top: 0.35rem;
 }
+
 .contador-titulo {
   font-family: var(--fuente-titulo);
   font-size: clamp(1.4rem, 3.5vw, 2.2rem);
@@ -234,8 +236,8 @@ body {
   min-width: 0;
 }
 
-/* Fallback: si por lo que sea no tiene la clase pila-fotos, que al menos
-   se vea una imagen prolija (no gigante sin control). */
+/* Fallback: si por lo que sea no tiene la clase pila-fotos ni grid-fotos,
+   que al menos se vea una imagen prolija (no gigante sin control). */
 .hito-foto img {
   width: 100%;
   border-radius: 12px;
@@ -252,22 +254,8 @@ body {
   cursor: pointer;
 }
 
-/*.galeria-extra {
-  flex-basis: 100%;
-  display: none;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
+/* ---- Galería extra: tira de fotos chicas que se deslizan solas ---- */
 
-.galeria-extra.visible {
-  display: grid;
-}
-
-.galeria-extra img {
-  width: 100%;
-  border-radius: 8px;
-}*/
 .galeria-extra-marquee {
   display: none;
   width: 100%;
@@ -290,11 +278,12 @@ body {
 }
 
 .marquee-fila img {
-  width: 100px;
-  height: 100px;
+  width: 200px;
+  height: 150px;
   object-fit: cover;
   border-radius: 8px;
   flex: 0 0 auto;
+  cursor: zoom-in;
 }
 
 .marquee-der {
@@ -320,125 +309,149 @@ body {
 }
 
 /* ---- Pila de fotos amontonadas (estilo polaroids desparramados) ----
-   Selector con más especificidad que ".hito-foto img" de arriba, para
-   asegurar que esta gane siempre sin importar el orden en el archivo. */
+   Único bloque que controla esto: contenedor con tamaño acotado (340px)
+   + las 3 fotos posicionadas de forma absoluta, superpuestas y rotadas. ---- */
+
 .hito-foto.pila-fotos {
   position: relative;
   width: 100%;
-  max-width: 340px;
-  aspect-ratio: 4 / 5;
+  max-width: 420px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto 1.5rem auto;
+}
+
+.hito-foto.pila-fotos {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 1 / 1.15;
   margin: 0 auto 1.5rem auto;
 }
 
 .hito-foto.pila-fotos img {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transition: transform 0.5s ease;
+  position: absolute;
+  width: 42%;
+  aspect-ratio: 4 / 5;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 10px;
+  border: 6px solid #fff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  transform: rotate(var(--angulo, 0deg));
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
+.hito-foto.pila-fotos img:nth-child(1) { z-index: 3; top: 0%;   left: 38%; }
+.hito-foto.pila-fotos img:nth-child(2) { z-index: 2; top: 34%;  left: 0%;  }
+.hito-foto.pila-fotos img:nth-child(3) { z-index: 1; top: 58%;  left: 52%; }
 
-/* La primera foto de la pila también abre la galería si la tocás
-   (además del botón "Ver más fotos"). */
-.hito-foto.pila-fotos:not(.desplegada) img:nth-child(1) {
-    transform: translate(-50%, -50%) rotate(-3deg);
-    z-index: 3;
+.hito-foto.pila-fotos:hover img {
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
 }
 
-.hito-foto.pila-fotos:not(.desplegada) img:nth-child(2) {
-    transform: translate(-50%, -50%) rotate(3deg);
-    z-index: 2;
-}
+/* ---- Layout alternativo "grid": 3 fotos prolijas, sin rotación ---- */
 
-.hito-foto.pila-fotos:not(.desplegada) img:nth-child(3) {
-    transform: translate(-50%, -50%) rotate(-6deg);
-    z-index: 1;
-}
-
-/* Abiertas */
-.hito-foto.pila-fotos.desplegada img:nth-child(1) {
-    transform: translate(-50%, -135%) rotate(-12deg); /* arriba */
-}
-.hito-foto.pila-fotos.desplegada img:nth-child(2) {
-    transform: translate(-50%, -50%) rotate(0deg);   /* centro */
-}
-.hito-foto.pila-fotos.desplegada img:nth-child(3) {
-    transform: translate(-50%, 35%) rotate(12deg);   /* abajo */
-}
-
-/* ---- Hito tipo "viaje": título grande + carrusel ---- */
-
-.hito-viaje {
-  max-width: 900px;
+.hito-foto.grid-fotos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
   width: 100%;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-  text-align: center;
+  max-width: 380px;
+  margin: 0 auto 1.5rem auto;
 }
 
-.hito-viaje-titulo {
-  font-family: var(--fuente-titulo);
-  font-size: clamp(2rem, 5vw, 3rem);
-  margin-bottom: 0.4rem;
-}
-
-.hito-viaje-fecha {
-  color: var(--color-texto-secundario);
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-}
-
-.hito-viaje .carrusel {
-  height: 420px;
-  max-width: 100%;
-  border-radius: 14px;
-}
-
-/* ---- Carrusel (usado por viajes) ----
-   Título grande con el nombre del lugar, y una sola imagen que se va
-   reemplazando: cuando termina un viaje, sigue con el siguiente
-   automáticamente (ver iniciarCarruselViajes en main.js). */
-
-.carrusel-titulo-lugar {
-  font-family: var(--fuente-titulo);
-  font-size: clamp(2rem, 5vw, 3rem);
-  text-align: center;
-  margin-bottom: 1.5rem;
-  min-height: 1.2em;
-  transition: opacity 0.3s ease;
-}
-
-.carrusel {
-  position: relative;
-  height: 480px;
-  max-width: 900px;
-  width: 100%;
-  margin: 0 auto;
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--color-fondo-alt);
-}
-
-.carrusel-imagen {
-  width: 100%;
-  height: 100%;
+.hito-foto.grid-fotos img:first-child {
+  grid-column: 1 / -1;
+  height: 220px;
   object-fit: cover;
-  display: block;
-  opacity: 0;
-  transform: translateX(6%);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  border-radius: 8px;
 }
 
-.carrusel-imagen.entrando {
+.hito-foto.grid-fotos img:not(:first-child) {
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* ---- Viajes: título grande + tira de fotos que se desliza sola ---- */
+
+.carrusel-viajes-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1400px;
+  margin: 2rem auto 0;
+}
+
+.carrusel-viaje-actual {
+  transition: opacity 0.35s ease, transform 0.35s ease;
   opacity: 1;
-  transform: translateX(0);
+  transform: translateY(0);
 }
 
-/* ---- Series ---- */
+.carrusel-viaje-actual.saliendo {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+.carrusel-viaje-actual.entrando {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.carrusel-viaje-titulo {
+  text-align: center;
+  font-family: var(--fuente-titulo);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+}
+
+.tira-viajes {
+  display: flex;
+  gap: 1rem;
+  overflow-x: hidden;
+  padding: 0.5rem 0;
+}
+
+.tira-viajes img {
+  flex: 0 0 auto;
+  height: 320px;
+  width: auto;
+  max-width: 420px;
+  object-fit: contain;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+}
+
+.carrusel-flecha {
+  position: absolute;
+  top: 55%;
+  transform: translateY(-50%);
+  z-index: 5;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  border: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.carrusel-flecha-izq { left: -10px; }
+.carrusel-flecha-der { right: -10px; }
+
+@media (max-width: 600px) {
+  .tira-viajes img { width: 180px; height: 230px; }
+  .carrusel-flecha { width: 34px; height: 34px; font-size: 1.2rem; }
+}
+
+/* ---- Series / pasatiempos ---- */
 
 .grid-series {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 1rem;
   max-width: 1000px;
   width: 100%;
@@ -454,7 +467,7 @@ body {
 
 .tarjeta-serie img {
   width: 100%;
-  height: 200px;
+  height: 400px;
   object-fit: cover;
   display: block;
 }
@@ -463,6 +476,7 @@ body {
   padding: 0.75rem;
   font-size: 1rem;
 }
+
 .puntaje {
   color: var(--color-acento);
 }
@@ -493,7 +507,15 @@ body.pagina-inicio {
   padding: 4rem 1.5rem;
   background-color: var(--bg);
   color: var(--fg);
-  transition: background-color 0.9s ease, color 0.9s ease;
+  transition: background-color 0.9s ease, color 0.9s ease,
+    opacity 0.8s ease, transform 0.8s ease;
+  opacity: 0;
+  transform: scale(0.97) translateY(25px);
+}
+
+.seccion-visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
 }
 
 /* Resguardo: cualquier .hito dentro de una .seccion queda centrado y
@@ -545,6 +567,158 @@ body.pagina-inicio {
   inset: 0;
 }
 
+/* ---- Layout "grande": una sola foto ocupando la mitad ---- */
+.hito-grande { align-items: stretch; }
+
+.hito-foto-grande {
+  flex: 1 1 400px;
+  overflow: hidden;
+  border-radius: 16px;
+  min-height: 340px;
+}
+
+.hito-foto-grande img {
+  width: 100%;
+  height: 100%;
+  min-height: 340px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.hito-foto-grande:hover img {
+  transform: scale(1.08);
+}
+
+/* ---- Layout "revelar": foto normal + foto misteriosa ---- */
+.hito-revelar-fotos {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.foto-normal img {
+  width: 180px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+}
+
+.foto-mystery {
+  width: 180px;
+  height: 220px;
+  cursor: pointer;
+}
+
+.foto-mystery-cara {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s ease;
+}
+
+.foto-mystery.girada .foto-mystery-cara {
+  transform: rotateY(360deg);
+}
+
+.foto-mystery-cara img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+  filter: blur(18px) brightness(0.4) saturate(0.6);
+  transition: filter 0.5s ease;
+}
+
+.foto-mystery.girada .foto-mystery-cara img {
+  filter: blur(0) brightness(1) saturate(1);
+}
+
+.foto-mystery-ver {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: opacity 0.3s ease;
+}
+
+.foto-mystery.girada .foto-mystery-ver {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.texto-revelado {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  font-style: italic;
+  margin-top: 0.75rem;
+  transition: max-height 0.6s ease, opacity 0.6s ease;
+}
+
+.texto-revelado.visible {
+  max-height: 100px;
+  opacity: 1;
+}
+
+/* ---- Layout "tags": título, descripción, fila de fotos, etiquetas ---- */
+
+.hito-tags-layout {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hito-tags-layout .hito-mensaje {
+  max-width: 600px;
+  margin: 0 auto 1.5rem auto;
+}
+
+.fila-fotos {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.fila-fotos img {
+  width: 160px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.lista-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.tag-pill {
+  background: rgba(127, 127, 127, 0.18);
+  border: 1px solid rgba(127, 127, 127, 0.35);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 600px) {
+  .fila-fotos img { width: 120px; height: 150px; }
+}
+
 /* ---- Final ---- */
 .seccion-final {
   text-align: center;
@@ -567,6 +741,65 @@ body.pagina-inicio {
 .final-texto {
   color: var(--fg-secundario);
   max-width: 480px;
+}
+
+/* ---- Carta que se da vuelta ---- */
+
+.carta {
+  width: 280px;
+  height: 280px;
+  perspective: 1200px;
+  cursor: pointer;
+}
+
+.carta-cara {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  transition: transform 0.7s ease;
+  transform-style: preserve-3d;
+}
+
+.carta[data-girada="true"] .carta-frente {
+  transform: rotateY(180deg);
+}
+
+.carta[data-girada="true"] .carta-dorso {
+  transform: rotateY(0deg);
+}
+
+.carta-frente {
+  background: #fff;
+  transform: rotateY(0deg);
+  overflow: hidden;
+}
+
+.carta-frente img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carta-dorso {
+  background: linear-gradient(135deg, #ffb6c1, #ff8fa3);
+  color: #4a1626;
+  font-family: var(--fuente-titulo);
+  font-size: 1.6rem;
+  text-align: center;
+  transform: rotateY(180deg);
+  flex-direction: column;
+}
+
+.carta-dorso::before {
+  content: "💌";
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 0.5rem;
 }
 
 /* ---- Nav lateral de puntitos ---- */
@@ -763,6 +996,31 @@ body.pagina-inicio {
   }
 }
 
+/* ---- Lightbox: click en una foto de la tira para verla grande ---- */
+
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  cursor: zoom-out;
+  padding: 2rem;
+}
+
+.lightbox-overlay.visible {
+  display: flex;
+}
+
+.lightbox-overlay img {
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
 /* ---- Responsive: en mobile, texto arriba y foto abajo, sin amontonar ---- */
 @media (max-width: 720px) {
   .hito,
@@ -770,189 +1028,4 @@ body.pagina-inicio {
     flex-direction: column;
     text-align: center;
   }
-
-  .hito-foto.pila-fotos {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  margin-bottom: 1.5rem;
-}
-}
-.carrusel-viajes-wrap {
-  position: relative;
-  width: 100%;
-  max-width: 1400px;
-  margin: 2rem auto 0;
-}
-
-.carrusel-viaje-actual {
-  transition: opacity 0.35s ease, transform 0.35s ease;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.carrusel-viaje-actual.saliendo {
-  opacity: 0;
-  transform: translateY(-30px);
-}
-
-.carrusel-viaje-actual.entrando {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-.carrusel-viaje-titulo {
-  text-align: center;
-  font-family: var(--fuente-titulo);
-  font-size: clamp(1.8rem, 4vw, 3rem);
-  margin-bottom: 1rem;
-  letter-spacing: 1px;
-}
-
-.tira-viajes {
-  display: flex;
-  gap: 1rem;
-  overflow-x: hidden;
-  padding: 0.5rem 0;
-}
-
-.tira-viajes img {
-  flex: 0 0 auto;
-  height: 320px;
-  width: auto;
-  max-width: 420px;
-  object-fit: contain;
-  background: rgba(0, 0, 0, 0.15);
-  border-radius: 12px;
-}
-
-.carrusel-flecha {
-  position: absolute;
-  top: 55%;
-  transform: translateY(-50%);
-  z-index: 5;
-  background: rgba(0, 0, 0, 0.45);
-  color: #fff;
-  border: none;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  font-size: 1.5rem;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.carrusel-flecha-izq { left: -10px; }
-.carrusel-flecha-der { right: -10px; }
-
-@media (max-width: 600px) {
-  .tira-viajes img { width: 180px; height: 230px; }
-  .carrusel-flecha { width: 34px; height: 34px; font-size: 1.2rem; }
-}
-.carta {
-  width: 30em;
-  height: 30em;
-  perspective: 1200px;
-  cursor: pointer;
-}
-
-.carta-cara {
-  position: absolute;
-  inset: 0;
-  backface-visibility: hidden;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-  transition: transform 0.7s ease;
-  transform-style: preserve-3d;
-}
-
-.carta[data-girada="true"] .carta-frente {
-  transform: rotateY(180deg);
-}
-
-.carta[data-girada="true"] .carta-dorso {
-  transform: rotateY(0deg);
-}
-
-.carta-frente {
-  background: #fff;
-  transform: rotateY(0deg);
-  overflow: hidden;
-}
-
-.carta-frente img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.carta-dorso {
-  background: linear-gradient(135deg, #ffb6c1, #ff8fa3);
-  color: #4a1626;
-  font-family: var(--fuente-titulo);
-  font-size: 2rem;
-  ::before {
-    content: "💌";
-    font-size: 3rem;
-    display: block;
-    margin-bottom: 0.5rem;
-  } 
-  display: flex;
-  text-align: center;
-  transform: rotateY(180deg);
-}
-.hito-tags-layout {
-  max-width: 900px;
-  width: 100%;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.hito-titulo {
-  font-family: var(--fuente-titulo);
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
-  margin-bottom: 0.75rem;
-}
-
-.hito-tags-layout .hito-mensaje {
-  max-width: 600px;
-  margin: 0 auto 1.5rem auto;
-}
-
-.fila-fotos {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 1rem;
-}
-
-.fila-fotos img {
-  width: 160px;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-.lista-tags {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1.5rem;
-}
-
-.tag-pill {
-  background: rgba(127, 127, 127, 0.18);
-  border: 1px solid rgba(127, 127, 127, 0.35);
-  border-radius: 999px;
-  padding: 0.35rem 0.9rem;
-  font-size: 0.85rem;
-}
-
-@media (max-width: 600px) {
-  .fila-fotos img { width: 120px; height: 150px; }
 }

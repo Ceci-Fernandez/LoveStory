@@ -16,7 +16,47 @@ document.addEventListener('DOMContentLoaded', () => {
   configurarVerMas();
   iniciarCarruselViajes();
   configurarCartaGiratoria(); 
+  configurarFotosRevelar();
+  configurarLightbox();
+  configurarTransicionSecciones();
 });
+function configurarTransicionSecciones() {
+  const secciones = document.querySelectorAll('.seccion');
+  if (!secciones.length) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('seccion-visible');
+        }
+      });
+    },
+    { threshold: 0.25 }
+  );
+
+  secciones.forEach((s) => observer.observe(s));
+}
+function configurarLightbox() {
+  let overlay = document.getElementById('lightbox-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'lightbox-overlay';
+    overlay.className = 'lightbox-overlay';
+    overlay.innerHTML = '<img id="lightbox-img" src="" alt="">';
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', () => overlay.classList.remove('visible'));
+  }
+
+  document.querySelectorAll('.galeria-extra-marquee img').forEach((img) => {
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('lightbox-img').src = img.src;
+      overlay.classList.add('visible');
+    });
+  });
+}
 
 function configurarCartaGiratoria() {
   const carta = document.getElementById('carta-giratoria');
@@ -120,6 +160,16 @@ function configurarSorpresa() {
   });
 }
 
+function configurarFotosRevelar() {
+  document.querySelectorAll('.foto-mystery').forEach((el) => {
+    el.addEventListener('click', () => {
+      el.classList.toggle('girada');
+      const idTexto = el.id.replace('mystery-', 'texto-revelado-');
+      const texto = document.getElementById(idTexto);
+      if (texto) texto.classList.toggle('visible');
+    });
+  });
+}
 function configurarVerMas() {
   document.querySelectorAll('.btn-ver-mas').forEach((boton) => {
     const galeria = document.getElementById(boton.dataset.target);

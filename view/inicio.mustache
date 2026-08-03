@@ -97,7 +97,48 @@
       </div>
     {{/es_tags}}
 
-    {{^es_tags}}
+{{#es_grande}}
+  <div class="hito hito-grande {{alineacion}}" data-aos="fade-up">
+    <div class="hito-texto">
+      <p class="hito-titulo">{{titulo}}</p>
+      <p class="hito-fecha">{{fecha}}</p>
+      <p class="hito-mensaje">{{mensaje}}</p>
+    </div>
+    {{#foto_grande}}
+      <div class="hito-foto-grande">
+        <img src="{{ruta}}" alt="{{descripcion}}">
+      </div>
+    {{/foto_grande}}
+  </div>
+{{/es_grande}}
+
+{{#es_revelar}}
+  <div class="hito {{alineacion}}" data-aos="fade-up">
+    <div class="hito-texto">
+      <p class="hito-titulo">{{titulo}}</p>
+      <p class="hito-fecha">{{fecha}}</p>
+      <p class="hito-mensaje">{{mensaje}}</p>
+      {{#texto_secundario}}
+        <p class="texto-revelado" id="texto-revelado-{{id}}">{{texto_secundario}}</p>
+      {{/texto_secundario}}
+    </div>
+    <div class="hito-revelar-fotos">
+      {{#foto_normal}}
+        <div class="foto-normal"><img src="{{ruta}}" alt="{{descripcion}}"></div>
+      {{/foto_normal}}
+      {{#foto_mystery}}
+        <div class="foto-mystery" id="mystery-{{id}}">
+          <div class="foto-mystery-cara">
+            <img src="{{ruta}}" alt="{{descripcion}}">
+            <span class="foto-mystery-ver">Ver</span>
+          </div>
+        </div>
+      {{/foto_mystery}}
+    </div>
+  </div>
+{{/es_revelar}}
+
+    {{#es_default}}
       <div class="hito {{alineacion}}" data-aos="fade-up">
         <div class="hito-texto">
           <p class="hito-titulo">{{titulo}}</p>
@@ -123,7 +164,7 @@
   </div>
 </div>
       </div>
-    {{/es_tags}}
+    {{/es_default}}
   </section>
 {{/hitos}}
 

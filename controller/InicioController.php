@@ -30,25 +30,25 @@ class InicioController
             'id'      => 'intro',
             'label'   => 'Introducción',
             'tema'    => 'azul',
-            'cancion' => $this->cancion('Perfect', 'Ed Sheeran', 'perfect.mp3', 'La canción con la que empieza todo.'),
+            'cancion' => $this->cancionUnica(),
         ];
         $viajes = [
             'id'      => 'viajes',
             'label'   => 'Viajes',
             'tema'    => 'celeste',
-            'cancion' => $this->cancion('A Sky Full of Stars', 'Coldplay', 'sky-full-of-stars.mp3', 'Sonaba en cada viaje largo.'),
+            'cancion' => $this->cancionUnica(),
         ];
         $series = [
             'id'      => 'series',
             'label'   => 'Series y pelis',
             'tema'    => 'negro',
-            'cancion' => $this->cancion('Photograph', 'Ed Sheeran', 'photograph.mp3', 'Nuestra playlist de las noches de maratón.'),
+            'cancion' => $this->cancionUnica(),
         ];
         $contador = [
             'id'      => 'contador-seccion',
             'label'   => 'Contador',
             'tema'    => 'violeta',
-            'cancion' => $this->cancion('All of Me', 'John Legend', 'all-of-me.mp3', 'Para contar cada segundo juntos.'),
+            'cancion' => $this->cancionUnica(),
         ];
         $final = [
             'id'      => 'final',
@@ -90,11 +90,7 @@ class InicioController
         }
 
         $temaPool = ['rosa', 'celeste'];
-        $cancionPool = [
-            $this->cancion('Yellow', 'Coldplay', 'yellow.mp3', 'La escuchábamos cuando viajábamos en colectivo.'),
-            $this->cancion('Home', 'Edward Sharpe & The Magnetic Zeros', 'home.mp3', 'Sonó el día de la mudanza.'),
-            $this->cancion('Perfect Duet', 'Ed Sheeran & Beyoncé', 'perfect-duet.mp3', 'Una tarde cualquiera, en casa.'),
-        ];
+        $cancionPool = [$this->cancionUnica()];
         $angulos = [-8, 5, -3, 7, -5, 4];
 
         foreach ($recuerdos as $recuerdo) {
@@ -108,6 +104,9 @@ class InicioController
 
             $layout = $recuerdo['layout'] ?? 'polaroid';
             $esTags = $layout === 'tags';
+            $esGrande = $layout === 'grande';
+            $esRevelar = $layout === 'revelar';
+            $esDefault = !$esTags && !$esGrande && !$esRevelar;
             $tamanioMostrar = $esTags ? 5 : 3;
 
             $fotosMostrar = [];
@@ -149,6 +148,13 @@ class InicioController
                 'tiene_tags'   => count($tags) > 0,
                 'tema'         => $temaPool[$i % count($temaPool)],
                 'cancion'      => $cancionPool[$i % count($cancionPool)],
+                'es_grande'         => $esGrande,
+                'es_revelar'        => $esRevelar,
+                'es_default'        => $esDefault,
+                'foto_grande'       => $fotos[0] ?? null,
+                'foto_normal'       => $fotos[0] ?? null,
+                'foto_mystery'      => $fotos[1] ?? null,
+                'texto_secundario'  => $recuerdo['texto_secundario'] ?? null,
 
             ];
             $i++;
@@ -197,6 +203,19 @@ class InicioController
      * Arma el array de una canción con su "nota" (la explicación que aparece
      * en el reproductor).
      */
+    /**
+     * Por ahora usamos una sola canción para todo el sitio (loop constante).
+     * Cuando agregues más, volvemos a variar por sección.
+     */
+    private function cancionUnica(): array
+    {
+        return $this->cancion(
+            'On Melancholy Hill',
+            'Gorillaz',
+            'gorillaz-melancholy-hill.mp3',
+            ''
+        );
+    }
     private function cancion(string $titulo, string $artista, string $archivo, string $nota): array
     {
         return [

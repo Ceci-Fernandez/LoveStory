@@ -14,7 +14,7 @@ class RecuerdoModel
 
     public function obtenerTodosOrdenados(): array
     {
-        $stmt = $this->db->query('SELECT * FROM mensajes ORDER BY fecha ASC');
+       $stmt = $this->db->query('SELECT * FROM mensajes ORDER BY orden ASC, fecha ASC');
         return $stmt->fetchAll();
     }
 
