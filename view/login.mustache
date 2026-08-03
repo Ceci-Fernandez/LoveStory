@@ -2,22 +2,34 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Nuestra historia</title>
-  <link rel="stylesheet" href="public/css/style.css">
+  <link rel="stylesheet" href="public/css/style.css?v=3">
 </head>
 <body class="pantalla-login">
-  <div class="caja-acceso">
-    <p>Bienvenido.</p>
-    <p>Esta historia solamente puede abrirla una persona.</p>
+  <div class="login-fondo"></div>
 
-    <form action="index.php?route=login-verificar" method="POST">
-      <label>{{pregunta}}</label>
-      <input type="text" name="respuesta" autofocus required>
-      <button type="submit">Entrar</button>
+  <div class="caja-acceso">
+    <p class="login-corazon">💙</p>
+    <h1 class="login-titulo">Bienvenido</h1>
+    <p class="login-subtitulo">Esta historia solamente puede abrirla una persona.</p>
+
+    <form action="index.php?route=login-verificar" method="POST" class="login-form">
+      <label class="login-label" for="respuesta">{{pregunta}}</label>
+      <input
+        type="text"
+        id="respuesta"
+        name="respuesta"
+        class="login-input"
+        autofocus
+        required
+        autocomplete="off"
+      >
+      <button type="submit" class="login-boton">Entrar</button>
     </form>
 
     {{#error}}
-      <p class="error">{{error}}</p>
+      <p class="error login-error">{{error}}</p>
     {{/error}}
   </div>
 </body>
