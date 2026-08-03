@@ -19,7 +19,25 @@ document.addEventListener('DOMContentLoaded', () => {
   configurarFotosRevelar();
   configurarLightbox();
   configurarTransicionSecciones();
+  clasificarOrientacionFotos();
 });
+function clasificarOrientacionFotos() {
+  const imgs = document.querySelectorAll(
+    '.pila-fotos img, .grid-fotos img, .hito-foto-grande img, .foto-normal img, .foto-mystery-cara img'
+  );
+
+  imgs.forEach((img) => {
+    function marcar() {
+      const esVertical = img.naturalHeight > img.naturalWidth;
+      img.classList.add(esVertical ? 'foto-vertical' : 'foto-horizontal');
+    }
+    if (img.complete && img.naturalWidth) {
+      marcar();
+    } else {
+      img.addEventListener('load', marcar, { once: true });
+    }
+  });
+}
 function configurarTransicionSecciones() {
   const secciones = document.querySelectorAll('.seccion');
   if (!secciones.length) return;
