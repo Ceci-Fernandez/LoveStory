@@ -4,16 +4,18 @@
  * Ajustar credenciales según el entorno.
  */
 
-define('DB_HOST', 'localhost');
+/*define('DB_HOST', 'localhost');
 define('DB_NAME', 'lovestory');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_CHARSET', 'utf8mb4');
-/*define('DB_HOST', 'sql110.infinityfree.com:3306');
+define('DB_CHARSET', 'utf8mb4');*/
+
+
+define('DB_HOST', 'sql110.infinityfree.com:3306');
 define('DB_NAME', 'if0_42550079_lovestory');
 define('DB_USER', 'if0_42550079');
 define('DB_PASS', 'Monkimin92');
-define('DB_CHARSET', 'utf8mb4'); */
+define('DB_CHARSET', 'utf8mb4'); 
 
 function getConnection(): PDO
 {
